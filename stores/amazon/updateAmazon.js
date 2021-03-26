@@ -3,7 +3,7 @@ const { getPriceFromSelector } = require("../../util/puppet");
 const color = require("../../util/color");
 const LINKS = require("./links");
 
-function updateAmazon(b, p) {
+async function updateAmazon(b, p) {
   //Initilize variables
   const browser = b;
   const page = p;
@@ -12,9 +12,11 @@ function updateAmazon(b, p) {
 
   //Loop through the links
   for (let key of Object.keys(LINKS)) {
-    getAmazonDataFromLink(key, LINKS[key]);
+    await getAmazonDataFromLink(key, LINKS[key]);
   }
 
+  //Function used to get Relevant Data from an Amazon Link
+  //  Data | availability, price
   async function getAmazonDataFromLink(product, link) {
     //Go to the page and wait for the product title to load
     try {
@@ -33,7 +35,7 @@ function updateAmazon(b, p) {
     //Get Price For Item
     try {
       price = await getPriceFromSelector(page, "#price_inside_buybox");
-      console.log(color.success(product, "is Available for", price));
+      console.log(color.success(product, "is Available for", price.trim()));
     } catch (error) {
       console.log(color.error(err));
     }
